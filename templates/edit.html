@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-2xl font-semibold mb-6">
+        Edit Researcher
+    </h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-5">
+
+        <!-- Name -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Full Name</label>
+            <input name="name" value="{{ r.name }}" required
+                class="w-full px-4 py-2 border rounded">
+        </div>
+        <!-- photo -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Profile Photo</label>
+            <input type="file" name="photo" accept="image/*"
+                class="w-full text-sm border rounded px-3 py-2">
+        </div>
+
+        <!-- Field -->
+        <div>
+            <label class="block text-sm font-medium mb-1">
+                Research Field
+                <span class="text-xs text-gray-500">(comma separated)</span>
+            </label>
+            <input name="field" value="{{ r.field }}" required
+                class="w-full px-4 py-2 border rounded">
+        </div>
+
+        <!-- Institution -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Institution</label>
+            <input name="institution" value="{{ r.institution }}" required
+                class="w-full px-4 py-2 border rounded">
+        </div>
+
+        <!-- Email -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input name="email" type="email" value="{{ r.email }}"
+                class="w-full px-4 py-2 border rounded">
+        </div>
+
+        <!-- Research Profiles -->
+        <div>
+            <label class="block text-sm font-medium mb-2">
+                Research Profiles
+            </label>
+
+            <div id="profiles" class="space-y-3">
+                {% for p in profiles %}
+                <div class="flex gap-2">
+                    <input name="profile_platform[]" value="{{ p.platform }}"
+                        class="w-1/3 px-3 py-2 border rounded">
+                    <input name="profile_url[]" value="{{ p.url }}"
+                        class="flex-1 px-3 py-2 border rounded">
+                    <button type="button" onclick="removeRow(this)"
+                        class="text-red-600 text-sm">✕</button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" onclick="addRow()"
+                class="mt-2 text-sm text-blue-600 hover:underline">
+                + Add another profile
+            </button>
+        </div>
+
+        <!-- Metrics -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Citation Count</label>
+                <input name="citation_count" type="number" min="0"
+                    value="{{ r.citation_count }}"
+                    class="w-full px-4 py-2 border rounded">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Publication Count</label>
+                <input name="publication_count" type="number" min="0"
+                    value="{{ r.publication_count }}"
+                    class="w-full px-4 py-2 border rounded">
+            </div>
+        </div>
+
+        <!-- Bio -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Short Bio</label>
+            <textarea name="bio" rows="4"
+                class="w-full px-4 py-2 border rounded">{{ r.bio }}</textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-between pt-4">
+            <a href="/admin" class="text-gray-600 hover:underline">← Back</a>
+            <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-500">
+                Update Researcher
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+function addRow() {
+    const container = document.getElementById("profiles");
+    const div = document.createElement("div");
+    div.className = "flex gap-2";
+    div.innerHTML = `
+        <input name="profile_platform[]" class="w-1/3 px-3 py-2 border rounded" placeholder="Platform">
+        <input name="profile_url[]" class="flex-1 px-3 py-2 border rounded" placeholder="https://...">
+        <button type="button" onclick="removeRow(this)" class="text-red-600 text-sm">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+function removeRow(btn) {
+    btn.parentElement.remove();
+}
+</script>
+
+{% endblock %}

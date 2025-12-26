@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Cambodian Researcher Database</h1>
+    <p class="text-gray-600">Explore researchers working in Cambodia across universities, institutes, and organizations.</p>
+</div>
+
+<div class="overflow-x-auto">
+    <table id="researchersTable" class="min-w-full bg-white rounded-lg shadow border border-gray-200">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-sm">
+            <tr>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(0)">#</th>
+                <th class="px-4 py-3 text-left">Photo</th>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(2)">Name</th>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(3)">Field</th>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(4)">Institution</th>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(5)">Email</th>
+                <th class="px-4 py-3 text-left">Profiles</th>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(7, 'num')">Citations</th>
+                <th class="px-4 py-3 text-left cursor-pointer" onclick="sortTable(8, 'num')">Publications</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-800">
+            {% for item in data %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="px-4 py-2">{{ loop.index }}</td>
+
+                <!-- Photo -->
+                <td class="px-4 py-2">
+                    <img src="{{ url_for('static', filename='uploads/' + (item.r.photo or 'default-avatar.png')) }}"
+                         class="w-12 h-12 rounded-full object-cover border">
+                </td>
+
+                <td class="px-4 py-2 font-medium">{{ item.r.name }}</td>
+
+                <!-- Fields -->
+                <td class="px-4 py-2">
+                    {% for f in item.r.field.split(',') %}
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded mr-1 mb-1 inline-block">
+                            {{ f.strip() }}
+                        </span>
+                    {% endfor %}
+                </td>
+
+                <td class="px-4 py-2">{{ item.r.institution }}</td>
+                <td class="px-4 py-2">{{ item.r.email }}</td>
+
+                <!-- Research Profiles -->
+                <td class="px-4 py-2">
+                    {% for p in item.profiles %}
+                        <a href="{{ p.url }}" target="_blank"
+                           class="text-blue-600 hover:underline mr-2 inline-block mb-1">
+                            {{ p.platform }}
+                        </a>
+                    {% endfor %}
+                </td>
+
+                <td class="px-4 py-2">{{ item.r.citation_count or 0 }}</td>
+                <td class="px-4 py-2">{{ item.r.publication_count or 0 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function sortTable(columnIndex, type='string') {
+    const table = document.getElementById("researchersTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.rows);
+    let asc = table.getAttribute("data-sort-asc") === "true" ? false : true;
+
+    rows.sort((a, b) => {
+        let valA = a.cells[columnIndex].innerText.trim();
+        let valB = b.cells[columnIndex].innerText.trim();
+
+        if (type === 'num') {
+            valA = parseFloat(valA) || 0;
+            valB = parseFloat(valB) || 0;
+        } else {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
+        }
+
+        if (valA < valB) return asc ? -1 : 1;
+        if (valA > valB) return asc ? 1 : -1;
+        return 0;
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+    table.setAttribute("data-sort-asc", asc);
+}
+</script>
+
+{% endblock %}

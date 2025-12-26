@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+
+    <h1 class="text-2xl font-semibold mb-6">
+        Add Researcher
+    </h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-5">
+
+        <!-- Name -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Full Name</label>
+            <input name="name" required
+                class="w-full px-4 py-2 border rounded focus:ring focus:outline-none"
+                placeholder="Dr. Sok Dara">
+        </div>
+        <!-- Photo -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Profile Photo</label>
+            <input type="file" name="photo" accept="image/*"
+                class="w-full text-sm border rounded px-3 py-2">
+        </div>
+        <!-- Field -->
+        <div>
+            <label class="block text-sm font-medium mb-1">
+                Research Field
+                <span class="text-xs text-gray-500">(comma separated)</span>
+            </label>
+            <input name="field" required
+                class="w-full px-4 py-2 border rounded focus:ring focus:outline-none"
+                placeholder="AI, Cybersecurity, Health">
+        </div>
+
+        <!-- Institution -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Institution</label>
+            <input name="institution" required
+                class="w-full px-4 py-2 border rounded focus:ring focus:outline-none"
+                placeholder="Royal University of Phnom Penh">
+        </div>
+
+        <!-- Email -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input name="email" type="email"
+                class="w-full px-4 py-2 border rounded focus:ring focus:outline-none"
+                placeholder="name@university.edu.kh">
+        </div>
+
+        <!-- Research Profiles -->
+        <div>
+            <label class="block text-sm font-medium mb-2">
+                Research Profiles
+            </label>
+
+            <div id="profiles" class="space-y-3">
+                <div class="flex gap-2">
+                    <input name="profile_platform[]"
+                        class="w-1/3 px-3 py-2 border rounded"
+                        placeholder="Platform (ORCID, GitHub)">
+                    <input name="profile_url[]"
+                        class="flex-1 px-3 py-2 border rounded"
+                        placeholder="https://...">
+                    <button type="button" onclick="removeRow(this)"
+                        class="text-red-600 text-sm">✕</button>
+                </div>
+            </div>
+
+            <button type="button" onclick="addRow()"
+                class="mt-2 text-sm text-blue-600 hover:underline">
+                + Add another profile
+            </button>
+        </div>
+
+        <!-- Metrics -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Citation Count</label>
+                <input name="citation_count" type="number" min="0"
+                    class="w-full px-4 py-2 border rounded"
+                    placeholder="0">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Publication Count</label>
+                <input name="publication_count" type="number" min="0"
+                    class="w-full px-4 py-2 border rounded"
+                    placeholder="0">
+            </div>
+        </div>
+
+        <!-- Bio -->
+        <div>
+            <label class="block text-sm font-medium mb-1">Short Bio</label>
+            <textarea name="bio" rows="4"
+                class="w-full px-4 py-2 border rounded"
+                placeholder="Brief academic background and research focus"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-between pt-4">
+            <a href="/admin" class="text-gray-600 hover:underline">← Back</a>
+            <button class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-500">
+                Save Researcher
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+function addRow() {
+    const container = document.getElementById("profiles");
+    const div = document.createElement("div");
+    div.className = "flex gap-2";
+    div.innerHTML = `
+        <input name="profile_platform[]" class="w-1/3 px-3 py-2 border rounded" placeholder="Platform">
+        <input name="profile_url[]" class="flex-1 px-3 py-2 border rounded" placeholder="https://...">
+        <button type="button" onclick="removeRow(this)" class="text-red-600 text-sm">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+function removeRow(btn) {
+    btn.parentElement.remove();
+}
+</script>
+
+{% endblock %}
